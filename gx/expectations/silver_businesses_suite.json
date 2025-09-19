@@ -1,0 +1,30 @@
+{
+  "expectation_suite_name": "silver_businesses_suite",
+  "ge_cloud_id": null,
+  "meta": { "great_expectations_version": "0.18.9" },
+  "expectations": [
+    {
+      "expectation_type": "expect_table_columns_to_match_ordered_list",
+      "kwargs": {
+        "column_list": ["registration_id", "business_name", "industry", "registration_date", "zip_code", "state"]
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": { "column": "registration_id" },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_of_type",
+      "kwargs": { "column": "registration_date", "type_": "DateType" },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": { "column": "state", "value_set": ["NY", "CA"] },
+      "meta": {}
+    }
+  ],
+  "data_asset_type": null
+}

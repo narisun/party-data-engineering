@@ -1,0 +1,5 @@
+registration_id,business_name,industry,registration_date,zip_code,state
+NY001,NY Pizza Co.,Food,2022-01-10,10001,NY
+NY002,NY Tech Solutions,Technology,2021-05-20,10004,NY
+NY003,Broadway Apparel,Retail,2023-03-15,,NY
+NY004,NY Finance Group,Finance,2020-11-30,10005,NY

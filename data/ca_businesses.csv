@@ -1,0 +1,5 @@
+reg_id,company_name,sector,reg_date,postal_code,region
+CA-A,SF Web Services,Technology,2022-02-15,94105,CA
+CA-B,LA Film Studios,Entertainment,2020-08-01,90001,CA
+CA-C,San Diego Tacos,Food,2023-04-25,92101,CA
+CA-D,LA Goods,,2021-12-01,90007,CA
