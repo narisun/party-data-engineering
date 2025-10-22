@@ -1,9 +1,8 @@
 # dags/party_reference_pipeline_dag.py
-import pendulum
 from airflow.decorators import dag
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
+import pendulum
 
-# --- BEST PRACTICE: Use the @dag decorator for cleaner DAG definition ---
 @dag(
     dag_id='party_reference_medallion_pipeline',
     start_date=pendulum.datetime(2025, 1, 1, tz="UTC"),
@@ -12,18 +11,26 @@ from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOpe
     tags=['medallion', 'spark', 'minio'],
 )
 def party_reference_pipeline():
-    # --- UPGRADE: Updated package versions for Spark 3.5 ---
-    # Delta Lake 3.2.0 is compatible with Spark 3.5
-    # Hadoop-AWS 3.3.6 provides S3A filesystem support
-    # GX 0.18.9 is the version used in the original project
-    submit_spark_job = SparkSubmitOperator(
-        task_id='submit_party_reference_spark_job',
-        application='/opt/airflow/jobs/party_reference_job.py',
-        conn_id='spark_default',  # Ensure this is configured in Airflow UI: spark://spark-master:7077
-        packages="io.delta:delta-spark_2.12:3.2.0,org.apache.hadoop:hadoop-aws:3.3.6,com.great-expectations:great-expectations:0.18.9",
-        conf={"spark.master": "spark://spark-master:7077"},
-        verbose=True,
-    )
+    SparkSubmitOperator(
+    task_id='submit_party_reference_spark_job',
+    conn_id='spark_default',
+    application='/opt/airflow/jobs/party_reference_job.py',
+    # py_files=None,  # remove the GE / ruamel wheels here
+    conf={
+        "spark.pyspark.driver.python": "python3",
+        "spark.pyspark.python": "python3",
+        "spark.hadoop.fs.s3a.endpoint": "http://minio:9000",
+        "spark.hadoop.fs.s3a.path.style.access": "true",
+        "spark.hadoop.fs.s3a.connection.ssl.enabled": "false",
+        "spark.hadoop.fs.s3a.access.key": "minioadmin",
+        "spark.hadoop.fs.s3a.secret.key": "minioadmin",
+        "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem",
+        "spark.sql.extensions": "io.delta.sql.DeltaSparkSessionExtension",
+        "spark.sql.catalog.spark_catalog": "org.apache.spark.sql.delta.catalog.DeltaCatalog",
+    },
+    packages="io.delta:delta-spark_2.12:3.2.0,org.apache.hadoop:hadoop-aws:3.3.4",
+    verbose=True,
+)
 
-# Instantiate the DAG
+
 party_reference_pipeline()
